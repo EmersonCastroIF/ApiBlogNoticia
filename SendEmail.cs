@@ -18,7 +18,7 @@ namespace EnviaEmail
                 smtpclient.Credentials = new NetworkCredential("emerson.castro.ifsp@gmail.com", "zxcnfvpheahsscyu");
                 emailMessage.From = new MailAddress("emerson.castro.ifsp@gmail.com", "Emerson");
                 emailMessage.Body = "Testando o envio de email smtp pelo gmail";
-                emailMessage.Subject = "Teste envio - Castro12ss345s";
+                emailMessage.Subject = "Teste envio - Castro12ss345sppp";
                 emailMessage.IsBodyHtml = true;
                 emailMessage.Priority = MailPriority.Normal;
                 emailMessage.To.Add(email);
