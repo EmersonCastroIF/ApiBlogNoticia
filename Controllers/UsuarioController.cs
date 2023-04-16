@@ -4,40 +4,47 @@ using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
 [ApiController]
-public class LeitorController : ControllerBase
+public class UsuarioController : ControllerBase
 {
     private readonly DataContext context;
 
-    public LeitorController(DataContext Context)
+    public UsuarioController(DataContext Context)
     {
         context = Context;
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post([FromBody] Leitor model)
+    public async Task<ActionResult> Post([FromBody] Usuario model)
     {
         try
         {
-            context.Leitor.Add(model);
+            var tipoUsuario = await context.TipoUsuario.FindAsync(model.TipoUsuario.Id);
+            if (tipoUsuario == null)
+            {
+                return BadRequest($"O TipoUsuario com ID {model.TipoUsuario.Id} não foi encontrado");
+            }
+
+            model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario
+            context.Usuario.Add(model);
             await context.SaveChangesAsync();
-            return Ok("Leitor salvo com sucesso");
+            return Ok("Usuario salvo com sucesso");
         }
-        catch
+        catch (Exception ex)
         {
-            return BadRequest("Falha ao inserir o Leitor informado");
+            return BadRequest("Falha ao inserir o Usuario informado: " + ex.Message);
         }
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Leitor>>> Get()
+    public async Task<ActionResult<IEnumerable<Usuario>>> Get()
     {
         try
         {
-            return Ok(await context.Leitor.ToListAsync());
+            return Ok(await context.Usuario.Include(p => p.TipoUsuario).ToListAsync());
         }
         catch
         {
-            return BadRequest("Erro ao obter os Leitores");
+            return BadRequest("Erro ao obter os Usuarios");
         }
     }
 
@@ -58,19 +65,27 @@ public class LeitorController : ControllerBase
     // }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Put([FromRoute] int id, [FromBody] Leitor model)
+    public async Task<ActionResult> Put([FromRoute] int id, [FromBody] Usuario model)
     {
         if (id != model.Id)
             return BadRequest();
 
         try
         {
-            if (await context.Leitor.AnyAsync(p => p.Id == id) == false)
+            if (await context.Usuario.AnyAsync(p => p.Id == id) == false)
                 return NotFound();
 
-            context.Leitor.Update(model);
+            var tipoUsuario = await context.TipoUsuario.FindAsync(model.TipoUsuario.Id);
+            if (tipoUsuario == null)
+            {
+                return BadRequest($"O TipoUsuario com ID {model.TipoUsuario.Id} não foi encontrado");
+            }
+
+            model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario                
+
+            context.Usuario.Update(model);
             await context.SaveChangesAsync();
-            return Ok("Leitor Atualizado com sucesso");
+            return Ok("Usuario Atualizado com sucesso");
         }
         catch
         {

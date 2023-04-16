@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-public class Leitor
+public class Usuario
 {
     
     public int Id { get; set; }
+
+    public TipoUsuario TipoUsuario { get; set; }
 
     [Required(ErrorMessage = "Nome é obrigatório")]
     [MinLength(5)]
