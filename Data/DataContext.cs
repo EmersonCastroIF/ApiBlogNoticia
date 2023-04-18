@@ -8,7 +8,7 @@ public class DataContext : DbContext
     public DbSet<TipoCurso> TipoCursos { get; set; } = null!;
     public DbSet<Usuario> Usuario { get; set; } = null!;
     public DbSet<TipoUsuario> TipoUsuario { get; set; } = null!;
-
+    public DbSet<Noticia> Noticia { get; set; } = null!;
     public DbSet<Email> Email { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

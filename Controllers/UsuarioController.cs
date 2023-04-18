@@ -48,21 +48,21 @@ public class UsuarioController : ControllerBase
         }
     }
 
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult<TipoCurso>> Get([FromRoute] int id)
-    // {
-    //     try
-    //     {
-    //         if (await context.TipoCursos.AnyAsync(p => p.Id == id))
-    //             return Ok(await context.TipoCursos.FindAsync(id));
-    //         else
-    //             return NotFound();
-    //     }
-    //     catch
-    //     {
-    //         return BadRequest();
-    //     }
-    // }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Usuario>> Get([FromRoute] int id)
+    {
+        try
+        {
+            if (await context.Usuario.AnyAsync(p => p.Id == id))
+                return Ok(await context.Usuario.FindAsync(id));
+            else
+                return NotFound();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+    }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> Put([FromRoute] int id, [FromBody] Usuario model)
@@ -93,23 +93,23 @@ public class UsuarioController : ControllerBase
         }
     }
 
-    // [HttpDelete("{id}")]
-    // public async Task<ActionResult> Delete([FromRoute] int id)
-    // {
-    //     try
-    //     {
-    //         TipoCurso model = await context.TipoCursos.FindAsync(id);
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete([FromRoute] int id)
+    {
+        try
+        {
+            Usuario model = await context.Usuario.FindAsync(id);
 
-    //         if (model == null)
-    //             return NotFound();
+            if (model == null)
+                return NotFound();
 
-    //         context.TipoCursos.Remove(model);
-    //         await context.SaveChangesAsync();
-    //         return Ok("Tipo de curso removido com sucesso");
-    //     }
-    //     catch
-    //     {
-    //         return BadRequest("Falha ao remover o tipo de curso");
-    //     }
-    // }
+            context.Usuario.Remove(model);
+            await context.SaveChangesAsync();
+            return Ok("Usuario removido com sucesso");
+        }
+        catch
+        {
+            return BadRequest("Falha ao remover o Usuario");
+        }
+    }
 }
