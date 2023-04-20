@@ -73,7 +73,11 @@ public class NoticiaController : ControllerBase
 
             context.Noticia.Update(model);
             await context.SaveChangesAsync();
-            return Ok("Noticia salva com sucesso");
+
+            if(model.Publicado)
+                return Ok("Noticia Publicada com sucesso");
+            else
+                return Ok("Noticia salva com sucesso");
         }
         catch
         {
