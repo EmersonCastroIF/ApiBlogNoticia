@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace exemplo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230416212610_Leitor11")]
-    partial class Leitor11
+    [Migration("20230423235741_Leitor")]
+    partial class Leitor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,23 +23,6 @@ namespace exemplo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Email", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EmailDestino")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Email");
-                });
 
             modelBuilder.Entity("Noticia", b =>
                 {
@@ -60,7 +43,8 @@ namespace exemplo.Migrations
 
                     b.Property<string>("SubTitulo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Texto")
                         .IsRequired()
@@ -125,12 +109,17 @@ namespace exemplo.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Bloqueado")
                         .HasColumnType("bit");
+
+                    b.Property<string>("CodigoAtivacao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataNascimento")
                         .HasColumnType("date");
@@ -142,8 +131,8 @@ namespace exemplo.Migrations
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(101)
+                        .HasColumnType("nvarchar(101)");
 
                     b.Property<string>("Senha")
                         .IsRequired()
@@ -156,7 +145,7 @@ namespace exemplo.Migrations
 
                     b.HasIndex("TipoUsuarioId");
 
-                    b.ToTable("Usuario");
+                    b.ToTable("Usuario", (string)null);
                 });
 
             modelBuilder.Entity("Noticia", b =>

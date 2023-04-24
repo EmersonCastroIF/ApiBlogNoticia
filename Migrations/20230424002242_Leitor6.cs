@@ -5,14 +5,14 @@
 namespace exemplo.Migrations
 {
     /// <inheritdoc />
-    public partial class Leitor11 : Migration
+    public partial class Leitor6 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<bool>(
-                name: "Publicado",
-                table: "Noticia",
+                name: "Ativo",
+                table: "Usuario",
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
@@ -22,8 +22,8 @@ namespace exemplo.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Publicado",
-                table: "Noticia");
+                name: "Ativo",
+                table: "Usuario");
         }
     }
 }

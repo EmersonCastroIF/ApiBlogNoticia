@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 [ApiController]
 public class UsuarioController : ControllerBase
 {
-    private readonly DataContext context;
+    private readonly DataContext dataContext;
 
     public UsuarioController(DataContext Context)
     {
-        context = Context;
+        dataContext = Context;
     }
 
     [HttpPost]
@@ -18,15 +18,21 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            var tipoUsuario = await context.TipoUsuario.FindAsync(model.TipoUsuario.Id);
+            var usuarioExistente = await dataContext.Usuario.SingleOrDefaultAsync(u => u.Email == model.Email);
+            if (usuarioExistente != null)
+            {
+                return BadRequest($"Email já cadastrado!");
+            }        
+
+            var tipoUsuario = await dataContext.TipoUsuario.FindAsync(model.TipoUsuario.Id);
             if (tipoUsuario == null)
             {
                 return BadRequest($"O TipoUsuario com ID {model.TipoUsuario.Id} não foi encontrado");
             }
 
             model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario
-            context.Usuario.Add(model);
-            await context.SaveChangesAsync();
+            dataContext.Usuario.Add(model);
+            await dataContext.SaveChangesAsync();
             return Ok("Usuario salvo com sucesso");
         }
         catch (Exception ex)
@@ -40,7 +46,7 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            return Ok(await context.Usuario.Include(p => p.TipoUsuario).ToListAsync());
+            return Ok(await dataContext.Usuario.Include(p => p.TipoUsuario).ToListAsync());
         }
         catch
         {
@@ -53,8 +59,8 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            if (await context.Usuario.AnyAsync(p => p.Id == id))
-                return Ok(await context.Usuario.FindAsync(id));
+            if (await dataContext.Usuario.AnyAsync(p => p.Id == id))
+                return Ok(await dataContext.Usuario.FindAsync(id));
             else
                 return NotFound();
         }
@@ -72,10 +78,10 @@ public class UsuarioController : ControllerBase
 
         try
         {
-            if (await context.Usuario.AnyAsync(p => p.Id == id) == false)
+            if (await dataContext.Usuario.AnyAsync(p => p.Id == id) == false)
                 return NotFound();
 
-            var tipoUsuario = await context.TipoUsuario.FindAsync(model.TipoUsuario.Id);
+            var tipoUsuario = await dataContext.TipoUsuario.FindAsync(model.TipoUsuario.Id);
             if (tipoUsuario == null)
             {
                 return BadRequest($"O TipoUsuario com ID {model.TipoUsuario.Id} não foi encontrado");
@@ -83,8 +89,8 @@ public class UsuarioController : ControllerBase
 
             model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario                
 
-            context.Usuario.Update(model);
-            await context.SaveChangesAsync();
+            dataContext.Usuario.Update(model);
+            await dataContext.SaveChangesAsync();
             return Ok("Usuario Atualizado com sucesso");
         }
         catch
@@ -98,13 +104,13 @@ public class UsuarioController : ControllerBase
     {
         try
         {
-            Usuario model = await context.Usuario.FindAsync(id);
+            Usuario model = await dataContext.Usuario.FindAsync(id);
 
             if (model == null)
                 return NotFound();
 
-            context.Usuario.Remove(model);
-            await context.SaveChangesAsync();
+            dataContext.Usuario.Remove(model);
+            await dataContext.SaveChangesAsync();
             return Ok("Usuario removido com sucesso");
         }
         catch

@@ -5,25 +5,18 @@
 namespace exemplo.Migrations
 {
     /// <inheritdoc />
-    public partial class Leitor3 : Migration
+    public partial class Leitor5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "Bloqueado",
-                table: "Leitor",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Bloqueado",
-                table: "Leitor");
+
         }
     }
 }

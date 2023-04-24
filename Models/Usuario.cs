@@ -1,5 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
+
+
+[Index(nameof(Email), IsUnique = true)]
 public class Usuario
 {
     
@@ -17,6 +21,9 @@ public class Usuario
     [MaxLength(100, ErrorMessage = "O E-mail pode conter, no máximo, 100 caracteres")]
     public string Email { get; set; }
 
+    [MaxLength(100, ErrorMessage = "O Apelido pode conter, no máximo, 100 caracteres")]
+    public string Apelido { get; set; }
+
     [Required(ErrorMessage = "Data de Nascimento é obrigatório")]
     [DataType(DataType.Date)]
     public DateTime DataNascimento { get; set; }
@@ -25,5 +32,7 @@ public class Usuario
     [MinLength(8, ErrorMessage = "A Senha deve conter, no minimo, 8 caracteres")]
     public string Senha { get; set; }    
 
-    public Boolean Bloqueado { get; set; }     
+    public Boolean Bloqueado { get; set; }    
+    public Boolean Ativo { get; set; }    
+    public string CodigoAtivacao {get; set;} 
 }
