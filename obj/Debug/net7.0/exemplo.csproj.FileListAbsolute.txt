@@ -74,3 +74,4 @@ C:\Users\emerson.rosa\Desktop\Exemplo API Thiago\exemplo\obj\Debug\net7.0\refint
 C:\Users\emerson.rosa\Desktop\Exemplo API Thiago\exemplo\obj\Debug\net7.0\exemplo.pdb
 C:\Users\emerson.rosa\Desktop\Exemplo API Thiago\exemplo\obj\Debug\net7.0\exemplo.genruntimeconfig.cache
 C:\Users\emerson.rosa\Desktop\Exemplo API Thiago\exemplo\obj\Debug\net7.0\ref\exemplo.dll
+C:\Users\emerson.rosa\Desktop\Exemplo API Thiago\exemplo\bin\Debug\net7.0\BCrypt.Net-Next.dll

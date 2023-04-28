@@ -41,7 +41,19 @@ public class EmailController : ControllerBase
 
             string codigo = sb.ToString();
 
-            DadosUsuario.CodigoAtivacao = codigo;
+            if (Usuario.TipoCodigo == "Reenvio-Código")
+            {
+                DadosUsuario.CodigoAtivacao = codigo;
+            }
+            else if (Usuario.TipoCodigo == "Redefinicao-Senha")
+            {
+                DadosUsuario.CodigoRedefineSenha = codigo;
+            }
+            else if (Usuario.TipoCodigo == "Redefinicao-Email")
+            {
+                DadosUsuario.CodigoRedefineEmail = codigo;
+            }
+
 
             try
             {
@@ -53,7 +65,7 @@ public class EmailController : ControllerBase
             }
 
 
-            SendEmail.Send(DadosUsuario.Email, codigo);
+            SendEmail.Send(DadosUsuario.Email, codigo, 1, Usuario.TipoCodigo);
             return Ok("E-mail enviado com sucesso !!!");
         }
         catch

@@ -35,4 +35,6 @@ public class Usuario
     public Boolean Bloqueado { get; set; }    
     public Boolean Ativo { get; set; }    
     public string CodigoAtivacao {get; set;} 
+    public string CodigoRedefineEmail {get; set;}
+    public string CodigoRedefineSenha {get; set;}
 }

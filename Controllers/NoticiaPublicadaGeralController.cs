@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 [Route("api/[controller]")]
 [ApiController]
-public class NoticiaController : ControllerBase
+public class NoticiaPublicadaGeralController : ControllerBase
 {
     private readonly DataContext context;
 
-    public NoticiaController(DataContext Context)
+    public NoticiaPublicadaGeralController(DataContext Context)
     {
         context = Context;
     }
@@ -35,14 +35,11 @@ public class NoticiaController : ControllerBase
     {
         try
         {
-            var noticias = await context.Noticia.Include(p => p.Usuario)
-            .Where(p => p.Publicado == true)
-            .ToListAsync();
-            return Ok(noticias);
+            return Ok(await context.Noticia.Include(p => p.Usuario).ToListAsync());
         }
         catch
         {
-            return BadRequest("Erro ao obter as Noticias");
+            return BadRequest("Erro ao obter os Noticias");
         }
     }
 

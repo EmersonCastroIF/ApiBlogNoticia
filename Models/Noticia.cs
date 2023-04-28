@@ -19,11 +19,17 @@ public class Noticia
 
     [Required(ErrorMessage = "Sub-Titulo é obrigatório")]
     [MinLength(5, ErrorMessage = "O Sub-Titulo deve conter, no minimo, 5 caracteres")]
-    [MaxLength(100, ErrorMessage = "O Titulo pode conter, no máximo, 100 caracteres")]    
-    [DataType(DataType.Date)]
+    [MaxLength(100, ErrorMessage = "O Sub-Titulo pode conter, no máximo, 100 caracteres")]    
     public string SubTitulo { get; set; }
 
     public int QtdLike { get; set; }
     public int QtdDesLike { get; set; }   
     public Boolean Publicado { get; set; }  
+
+    [DataType(DataType.Date)]
+    public DateTime DataPublicacao{ get; set; }  
+    
+    [DataType(DataType.Date)]
+    public DateTime DataAlteracao{ get; set; }  
+        
 }

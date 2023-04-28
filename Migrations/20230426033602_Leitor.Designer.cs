@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace exemplo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230424000345_Leitor3")]
-    partial class Leitor3
+    [Migration("20230426033602_Leitor")]
+    partial class Leitor
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,34 @@ namespace exemplo.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Comentario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdNoticia")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Texto")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Comentario");
+                });
+
             modelBuilder.Entity("Noticia", b =>
                 {
                     b.Property<int>("Id")
@@ -31,6 +59,12 @@ namespace exemplo.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataAlteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataPublicacao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Publicado")
                         .HasColumnType("bit");
@@ -65,7 +99,7 @@ namespace exemplo.Migrations
                     b.ToTable("Noticia");
                 });
 
-            modelBuilder.Entity("TipoCurso", b =>
+            modelBuilder.Entity("Reacoes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,18 +107,21 @@ namespace exemplo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("DesLike")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<bool>("Like")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NoticiaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoCursos");
+                    b.ToTable("Reacoes");
                 });
 
             modelBuilder.Entity("TipoUsuario", b =>
@@ -119,6 +156,9 @@ namespace exemplo.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Bloqueado")
                         .HasColumnType("bit");
 
@@ -146,6 +186,9 @@ namespace exemplo.Migrations
                     b.Property<int>("TipoUsuarioId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -154,6 +197,17 @@ namespace exemplo.Migrations
                     b.HasIndex("TipoUsuarioId");
 
                     b.ToTable("Usuario", (string)null);
+                });
+
+            modelBuilder.Entity("Comentario", b =>
+                {
+                    b.HasOne("Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Noticia", b =>

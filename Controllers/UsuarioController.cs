@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using EnviaEmail;
+using System.Text;
+using System.Security.Cryptography;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -18,11 +20,12 @@ public class UsuarioController : ControllerBase
     {
         try
         {
+            var codigo = "";
             var usuarioExistente = await dataContext.Usuario.SingleOrDefaultAsync(u => u.Email == model.Email);
             if (usuarioExistente != null)
             {
                 return BadRequest($"Email já cadastrado!");
-            }        
+            }
 
             var tipoUsuario = await dataContext.TipoUsuario.FindAsync(model.TipoUsuario.Id);
             if (tipoUsuario == null)
@@ -30,14 +33,73 @@ public class UsuarioController : ControllerBase
                 return BadRequest($"O TipoUsuario com ID {model.TipoUsuario.Id} não foi encontrado");
             }
 
+            if (tipoUsuario.Id == 2)
+            {
+                //Gera código aleatório
+                const string CaracteresPermitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                const int tamanho = 5;
+                var random = new Random();
+
+                var sb = new StringBuilder();
+                for (int i = 0; i < tamanho; i++)
+                {
+                    int index = random.Next(CaracteresPermitidos.Length);
+                    sb.Append(CaracteresPermitidos[index]);
+                }
+                codigo = sb.ToString();
+
+                // Criptografa a senha do usuário
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+                    // Computa o hash da senha
+                    byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(codigo));
+
+                    // Converte o hash para uma string hexadecimal
+                    StringBuilder sb3 = new StringBuilder();
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        sb3.Append(bytes[i].ToString("x2"));
+                    }
+                    model.Senha = sb3.ToString();
+                }
+
+
+                model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario
+                dataContext.Usuario.Add(model);
+                await dataContext.SaveChangesAsync();
+
+                SendEmail.Send(model.Email, codigo, model.TipoUsuario.Id, "CadastroAutor");
+                return Ok("E-mail ao autor com sucesso !!!");
+            }
+            else
+            {
+                // Criptografa a senha do usuário
+                using (SHA256 sha256Hash = SHA256.Create())
+                {
+                    // Computa o hash da senha
+                    byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Senha));
+
+                    // Converte o hash para uma string hexadecimal
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < bytes.Length; i++)
+                    {
+                        sb.Append(bytes[i].ToString("x2"));
+                    }
+                    model.Senha = sb.ToString();
+                }
+            }
+
             model.TipoUsuario = tipoUsuario; // associa o TipoUsuario ao Usuario
             dataContext.Usuario.Add(model);
             await dataContext.SaveChangesAsync();
+
             return Ok("Usuario salvo com sucesso");
         }
         catch (Exception ex)
         {
-            return BadRequest("Falha ao inserir o Usuario informado: " + ex.Message);
+            // Captura a mensagem da inner exception, se existir
+            string errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return BadRequest("Falha ao inserir o Usuario informado: " + errorMessage);
         }
     }
 
